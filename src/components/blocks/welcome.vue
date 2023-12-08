@@ -16,12 +16,18 @@ const buttons = [
     },
     {
         title: 'Whatsapp',
-        url: 'https://wa.me/+905523343071?text=Merhaba%20İsterseniz%20Whatsapp%20Üzerinden%20Arama%20Yapabilirsiniz%20', 
+        url: 'https://wa.me/+905523343071?text=Merhaba%20İsterseniz%20Whatsapp%20Üzerinden%20Arama%20Yapabilirsiniz%20',
         variant: 'outlined',
         color: 'secondary'
     }
 ]
 const phone = '0 552 334 30 71'
+const isIntersected = ref(false)
+
+const onIntersect = (a, b) => {
+    if(b[0].intersectionRatio >= 0.5)
+        isIntersected.value = true
+}
 
 const callTo = computed(() => {
     return 'tel:+9' + (phone.split(' ').join(''))
@@ -38,11 +44,11 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="welcome-main" id="home">
+  <section class="welcome-main" id="home" v-intersect="{handler: onIntersect, options: { threshold: [0, 0.5, 1.0] }}">
     <img :src="bgYellow" class="bg_yellow d-none d-md-block" />
     <img :src="headerMask" class="header_mask d-none d-md-block" />
     <v-container>
-      <div class="welcome-container">
+      <div class="welcome-container" :class="{intersected: isIntersected}">
         <h1>{{ title }}</h1>
         <div class="body" v-html="body" />
         <div class="d-flex py-2 justify-center justify-sm-start flex-column flex-sm-row">
@@ -98,7 +104,14 @@ onMounted(() => {
   .welcome-container{
       position: relative;
       z-index: 10;
-    padding: 0 40% 0 8%;
+      padding: 0 40% 0 8%;
+      opacity: .2;
+      transform: translateX(-50%);
+      transition: opacity .5s, transform .5s;
+      &.intersected{
+          opacity: 1;
+          transform: translateX(0);
+      }
       h1{
           font-size: 55px;
           font-weight: 900;

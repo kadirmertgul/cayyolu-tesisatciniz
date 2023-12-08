@@ -4,16 +4,23 @@ import circle1 from '../../assets/img/problems/circle-1.svg'
 import circle2 from '../../assets/img/problems/circle-2.svg'
 import circle3 from '../../assets/img/problems/circle-3.svg'
 import circle4 from '../../assets/img/problems/circle-4.svg'
+import { ref } from "vue";
 
 const title = 'Nelere Dikkat Etmeliyiz?'
 const body = 'Merak ettiğiniz tüm sorularınızı yanıtlamak için size bir telefon kadar yakınız. Hemen arayın!'
+const isIntersected = ref(false)
+
+const onIntersect = (a, b) => {
+    if(b[0].intersectionRatio >= 0.5)
+        isIntersected.value = true
+}
 
 </script>
 
 <template>
-  <section class="problems-main">
+  <section class="problems-main" v-intersect="{handler: onIntersect, options: { threshold: [0, 0.5, 1.0] }}">
     <img :src="bg" alt="Nelere dikkat etmeliyiz" class="bg"/>
-    <v-container class="container-main">
+    <v-container class="container-main" :class="{intersected: isIntersected}">
       <VRow>
         <VCol cols="12" md="5" class="d-flex align-center content-main order-md-2">
           <div class="content-inner">
@@ -101,6 +108,9 @@ const body = 'Merak ettiğiniz tüm sorularınızı yanıtlamak için size bir t
         .img-container{
             position: relative;
             margin: 50px 0;
+            opacity: .3;
+            transform: translateX(-50%);
+            transition: opacity .5s, transform .5s;
             .circle{
                 position: absolute;
                 z-index: -1;
@@ -125,39 +135,50 @@ const body = 'Merak ettiğiniz tüm sorularınızı yanıtlamak için size bir t
                 }
             }
         }
-    }
-    .content-main{
-        display: flex;
-        justify-content: center;
-        .content-inner{
-            max-width: 250px;
-            h2{
-                font-size: 38px;
-                font-weight: 900;
-                margin-bottom: 20px;
-                line-height: 1.1;
-            }
-            .body{
-                font-size: 16px;
-                font-weight: 300;
-                margin-bottom: 20px;
-            }
-        }
-
-        @media screen and (max-width:959px){
+        .content-main{
+            display: flex;
+            justify-content: center;
+            opacity: .3;
+            transform: translateX(50%);
+            transition: opacity .5s, transform .5s;
             .content-inner{
-                max-width: 400px;
-                margin: 0 auto;
-                text-align: center;
+                max-width: 250px;
                 h2{
-                    font-size: 28px;
-                    text-align: center;
+                    font-size: 38px;
+                    font-weight: 900;
+                    margin-bottom: 20px;
+                    line-height: 1.1;
                 }
                 .body{
+                    font-size: 16px;
+                    font-weight: 300;
+                    margin-bottom: 20px;
+                }
+            }
+
+            @media screen and (max-width:959px){
+                .content-inner{
+                    max-width: 400px;
+                    margin: 0 auto;
                     text-align: center;
+                    h2{
+                        font-size: 28px;
+                        text-align: center;
+                    }
+                    .body{
+                        text-align: center;
+                    }
                 }
             }
         }
+        &.intersected{
+            .img-container,
+            .content-main{
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
     }
+    
 }
 </style>

@@ -4,17 +4,24 @@ import plumbing1 from '../../assets/img/plumbing/plumbing-1.png'
 import plumbing2 from '../../assets/img/plumbing/plumbing-2.png'
 import plumbing3 from '../../assets/img/plumbing/plumbing-3.png'
 import plumbing4 from '../../assets/img/plumbing/plumbing-4.png'
+import { ref } from "vue";
 
 const title = 'Sıhhi Tesisat'
 const body = 'Sıhhi tesisat evin can damarıdır. Evin damarlarındaki en ufak bir aksama size yüklü maliyetler doğurabilir.'
+const isIntersected = ref(false)
+
+const onIntersect = (a, b) => {
+    if(b[0].intersectionRatio >= 0.5)
+      isIntersected.value = true
+}
 
 </script>
 
 <template>
-  <section class="plumbing-main">
+  <section class="plumbing-main" v-intersect="{handler: onIntersect, options: { threshold: [0, 0.5, 1.0] }}">
     <v-container>
       <VRow>
-        <VCol cols="12" md="5" class="d-flex align-center content-main">
+        <VCol cols="12" md="5" class="d-flex align-center content-main" :class="{intersected: isIntersected}">
           <div class="content-inner">
             <h2>{{ title }}</h2>
             <div class="body" v-html="body"></div>
@@ -28,7 +35,7 @@ const body = 'Sıhhi tesisat evin can damarıdır. Evin damarlarındaki en ufak 
             </VBtn>
           </div>
         </VCol>
-        <VCol cols="11" md="7" lg="6" xl="5" class="img-container">
+        <VCol cols="11" md="7" lg="6" xl="5" class="img-container" :class="{intersected: isIntersected}">
           <img :src="dots" class="dots" />
           <VRow>
             <VCol cols="6" class="pt-12">
@@ -53,6 +60,13 @@ const body = 'Sıhhi tesisat evin can damarıdır. Evin damarlarındaki en ufak 
     .img-container{
         position: relative;
         margin: 50px 0;
+        opacity: .3;
+        transform: translateX(50%);
+        transition: opacity .3s, transform .3s;
+        &.intersected{
+            opacity: 1;
+            transform: translateX(0);
+        }
         .dots{
             position: absolute;
             top: 50%;
@@ -62,6 +76,13 @@ const body = 'Sıhhi tesisat evin can damarıdır. Evin damarlarındaki en ufak 
         }
     }
     .content-main{
+        opacity: .3;
+        transform: translateX(-50%);
+        transition: opacity .3s, transform .3s;
+        &.intersected{
+            opacity: 1;
+            transform: translateX(0);
+        }
         .content-inner{
             max-width: 250px;
             h2{

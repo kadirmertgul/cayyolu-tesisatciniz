@@ -1,9 +1,17 @@
 <script setup>
 
+import { ref } from "vue";
+
+const isIntersected = ref(false)
+
+const onIntersect = (a, b) => {
+    if(b[0].intersectionRatio >= 0.7)
+        isIntersected.value = true
+}
 </script>
 
 <template>
-  <section class="contact-main" id="contact">
+  <section class="contact-main" id="contact" v-intersect="{handler: onIntersect, options: { threshold: [0, 0.7, 1.0] }}" :class="{intersected: isIntersected}">
     <v-container>
       <div class="d-flex justify-center">
         <h2 class="section-title mb-6">İletişim</h2>
@@ -35,6 +43,11 @@
 <style lang="scss">
 .contact-main{
     padding: 0 0 50px 0;
+    opacity: .2;
+    transition: opacity .7s;
+    &.intersected{
+        opacity: 1;
+    }
     .section-title{
         font-size: 36px;
     }

@@ -4,15 +4,22 @@ import circle1 from '../../assets/img/service/circle-1.svg'
 import circle2 from '../../assets/img/service/circle-2.svg'
 import circle3 from '../../assets/img/service/circle-3.svg'
 import dots from '../../assets/dots.svg'
+import { ref } from "vue";
 
 const title = 'Yerinde Tespit Hemen Tamir!'
 const body = '7/24 araçlarımızla arızanın bulunduğu bölgeye gelip tespitlerimizi yapıp çözümünü sunuyoruz.'
+const isIntersected = ref(false)
+
+const onIntersect = (a, b) => {
+    if(b[0].intersectionRatio >= 0.5)
+        isIntersected.value = true
+}
 </script>
 
 <template>
-  <section class="service-main">
+  <section class="service-main" v-intersect="{handler: onIntersect, options: { threshold: [0, 0.5, 1.0] }}" :class="{intersected: isIntersected}">
     <VRow>
-      <VCol cols="12" md="6" class="ps-md-10 d-flex justify-center align-center position-relative">
+      <VCol cols="12" md="6" class="ps-md-10 d-flex justify-center align-center position-relative text-col">
         <img :src="circle1" class="circle circle1" />
         <img :src="circle2" class="circle circle2" />
         <img :src="circle3" class="circle circle3" />
@@ -29,7 +36,7 @@ const body = '7/24 araçlarımızla arızanın bulunduğu bölgeye gelip tespitl
           </VBtn>
         </div>
       </VCol>
-      <VCol md="6" class="d-none d-md-flex position-relative">
+      <VCol md="6" class="d-none d-md-flex position-relative img-col">
         <img :src="service" class="service-img" />
         <img :src="dots" class="dots" />
       </VCol>
@@ -79,6 +86,24 @@ const body = '7/24 araçlarımızla arızanın bulunduğu bölgeye gelip tespitl
             font-size: 16px;
             font-weight: 300;
             margin-bottom: 20px;
+        }
+    }
+
+    .img-col{
+        opacity: .3;
+        transform: translateX(50%);
+        transition: opacity .5s, transform .5s;
+    }
+    .text-col{
+        opacity: .3;
+        transform: translateX(-50%);
+        transition: opacity .5s, transform .5s;
+    }
+    &.intersected{
+        .img-col,
+        .text-col{
+            opacity: 1;
+            transform: translateX(0);
         }
     }
 }
